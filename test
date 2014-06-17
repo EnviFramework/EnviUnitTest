@@ -1,0 +1,22 @@
+#!/usr/bin/php
+<?php
+/**
+ * バッチ用の設定
+ *
+*/
+set_time_limit(0);
+ini_set('memory_limit', -1);
+umask();
+
+define('ENVI_TEST_BASE_DIR', dirname(__FILE__).DIRECTORY_SEPARATOR);
+/* ----------------------------------------- */
+$test_key = $argv[1];
+
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'spyc'.DIRECTORY_SEPARATOR.'Spyc.php';
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'EnviUnitTest.php';
+
+
+$EnviTest = EnviUnitTest::singleton($test_key);
+
+$EnviTest->execute($test_key);
+

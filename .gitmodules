@@ -1,0 +1,6 @@
+[submodule "CodeParser"]
+	path = CodeParser
+	url = git@github.com:EnviMVC/CodeParser.git
+[submodule "spyc"]
+	path = spyc
+	url = git@github.com:mustangostang/spyc.git

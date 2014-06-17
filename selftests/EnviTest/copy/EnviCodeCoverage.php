@@ -1,4 +1,10 @@
 <?php
+namespace envitest\unit;
+use \exception;
+use \ArrayAccess;
+use \Countable;
+use \SeekableIterator;
+use \ReflectionClass;
 /**
  * コードカバレッジ計測
  *
