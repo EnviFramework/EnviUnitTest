@@ -570,6 +570,7 @@ abstract class EnviTestScenario
         $afterClass    = array();
         $default_group = 'small';
         $group         = array();
+        $timeout_list        = array();
         $class_backup_globals = true;
         $backup_globals = true;
         $test_method_list = array();
@@ -587,7 +588,7 @@ abstract class EnviTestScenario
                 $methods[$method] = true;
             }
             // @beforeアノテーションの処理
-            if (isset($docs['after'])) {
+            if (isset($docs['before'])) {
                 $before[$method] = $method;
             }
             // @afterアノテーションの処理
@@ -601,6 +602,10 @@ abstract class EnviTestScenario
             // @afterClassアノテーションの処理
             if (isset($docs['afterClass'])) {
                 $afterClass[$method] = $method;
+            }
+            // @timeoutアノテーションの処理
+            if (isset($docs['timeout'])) {
+                $timeout_list[$method] = $method;
             }
 
             // グループ
@@ -671,7 +676,10 @@ abstract class EnviTestScenario
                         $time_out = max($this->system_conf['time_out'][$self_group], $time_out);
                     }
                 }
+            } elseif (isset($timeout_list[$method])) {
+                $time_out = $timeout_list[$method];
             }
+
             $test_method_list[$method] = array(
                 'group'          => $group[$method],
                 'backup_globals' => $backup_globals,

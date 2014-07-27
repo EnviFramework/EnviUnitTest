@@ -222,17 +222,28 @@ class EnviUnitTest
                             $provider[] = $results[$val[0]];
                         }
                     }
+
+                    // コードカバレッジ
+                    if (isset($docs_method['covers'])) {
+                        foreach ($docs_method['cover'] as $val) {
+                            $cover[] = $val[0];
+                        }
+                    }
                     if (isset($docs_method['cover'])) {
                         foreach ($docs_method['cover'] as $val) {
                             $cover[] = $val[0];
                         }
+                    }
+                    if (count(cover) > 0) {
                         if ($code_coverage !== false) {
                             $code_coverage->setCover($cover);
                         }
                     }
+
                     if ($covers_nothing) {
                         $code_coverage->startNothing();
                     }
+
                     $method_start_time = microtime(true);
                     $results[$method] = call_user_func_array(array($test_obj, $method), $provider);
                     $execute_time = (microtime(true) - $method_start_time);
