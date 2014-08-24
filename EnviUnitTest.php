@@ -234,7 +234,7 @@ class EnviUnitTest
                             $cover[] = $val[0];
                         }
                     }
-                    if (count(cover) > 0) {
+                    if (count($cover) > 0) {
                         if ($code_coverage !== false) {
                             $code_coverage->setCover($cover);
                         }
