@@ -29,7 +29,7 @@
  * @package    UnitTest
  * @subpackage UnitTest
  * @author     Akito <akito-artisan@five-foxes.com>
- * @copyright  2011-2013 Artisan Project
+ * @copyright  2011-2014 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
  * @version    GIT: $Id$
  * @link       https://github.com/EnviMVC/EnviMVC3PHP
@@ -53,7 +53,7 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'EnviMock.php';
  * @package    UnitTest
  * @subpackage UnitTest
  * @author     Akito <akito-artisan@five-foxes.com>
- * @copyright  2011-2013 Artisan Project
+ * @copyright  2011-2014 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
  * @version    Release: @package_version@
  * @link       https://github.com/EnviMVC/EnviMVC3PHP
@@ -442,11 +442,10 @@ class EnviUnitTest
                 $sweet['class_name']::$method();
             }
         }
-        $execution_name = $this->getOption('-t', 'Total');
-
 
 
         if ($this->hasOption('--this_is_multi_process_testing')) {
+            // マルチプロセス実行内の処理なら、何も出力せずに、中間データを保存する
             if (is_file($this->test_self_dir.$this->execution_time_tmp_file)) {
                 $execution_time = unserialize(file_get_contents($this->test_self_dir.$this->execution_time_tmp_file));
             } else {
@@ -467,13 +466,16 @@ class EnviUnitTest
             file_put_contents($this->test_self_dir.$this->execution_time_tmp_file, serialize($execution_time));
 
         } else {
+            $execution_name = $this->getOption('-t', 'Total');
             echo $execution_name,' ExecutionTime:'.round(microtime(true) - $start_time, 5),"sec \r\n(testing only : ",
                 round($testing_time_all, 5),"sec) \r\n{$assertion_count} assertions test end \r\n",
                 number_format(memory_get_peak_usage(true))," memory usage\r\n";
         }
 
         if ($code_coverage !== false && !$is_ng) {
+            // カバレッジの計測
             if ($this->hasOption('--this_is_multi_process_testing')) {
+                // マルチプロセス実行内の処理なら、何も出力せずに、中間データを保存する
                 $coverage_data = $code_coverage->getCoverageData();
                 file_put_contents($this->test_self_dir.$this->coverage_tmp_file, serialize($coverage_data));
             } else {
@@ -595,7 +597,6 @@ class EnviUnitTest
         $line .= '  ';
         $cmd = 'echo -e "\033[7;33m'.$line.'\033[0;39m\033[1;41m'.$this->escapeShell($line_string).'\033[0;39m"';
         system($cmd);
-
     }
 
     private function successLine($line, $line_string)
@@ -631,7 +632,7 @@ class EnviUnitTest
 
     private function  escapeShell($str)
     {
-        return str_replace(array("\\", '$', '"'), array("\\\\", '\$', '\"'), $str);
+        return str_replace(array("\\", '$', '"', '`'), array("\\\\", '\$', '\"', '\`'), $str);
     }
 
 
