@@ -524,28 +524,20 @@ abstract class EnviTestScenario
     public function getTestByDir($dir_name, $node = 0, $arr = array())
     {
         if (is_dir($dir_name)) {
-            if ($dh = opendir($dir_name)) {
-                while (($file = readdir($dh)) !== false) {
-                    if (strpos($file, '.') === 0) {
-                        continue;
+            $file_lists = glob(realpath($dir_name).DIRECTORY_SEPARATOR.'{*Test.php,*Test,*Test.class.php}', GLOB_BRACE);
+            sort($file_lists);
+            foreach ($file_lists as $file_path) {
+                $file = basename($file_path);
+                if (is_dir($file_path)) {
+                    if (mb_ereg('Test$', $file)) {
+                        $arr = $this->getTestByDir($dir_name.DIRECTORY_SEPARATOR.$file, $node +1, $arr);
                     }
-                    if (is_dir($dir_name.DIRECTORY_SEPARATOR.$file)) {
-                        if (mb_ereg('Test$', $file)) {
-                            $arr = $this->getTestByDir($dir_name.DIRECTORY_SEPARATOR.$file, $node +1, $arr);
-                        }
-                        continue;
-                    }
-                    if (!mb_ereg('Test(\.class)?\.php$', $file)) {
-                        continue;
-                    }
-                    if (is_file($dir_name.DIRECTORY_SEPARATOR.$file) && $node > 0) {
-                        $arr[] = array(
-                            'class_path' => $dir_name.DIRECTORY_SEPARATOR.$file,
-                            'class_name' => str_replace(array('.class.php', '.php'), '', $file)
-                        );
-                    }
+                    continue;
                 }
-                closedir($dh);
+                $arr[] = array(
+                    'class_path' => $file_path,
+                    'class_name' => str_replace(array('.class.php', '.php'), '', $file)
+                );
             }
         }
         return $arr;

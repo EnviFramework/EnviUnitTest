@@ -67,6 +67,9 @@ class EnviUnitTest
 
     protected $parser;
     private $no_color;
+    private $test_self_dir;
+    private $coverage_tmp_file;
+    private $execution_time_tmp_file;
 
     /**
      * +-- コンストラクタ
@@ -77,23 +80,118 @@ class EnviUnitTest
      */
     protected function __construct($file)
     {
+        $this->test_self_dir = dirname($file).DIRECTORY_SEPARATOR;
         $this->system_conf = $this->parseYml(basename($file), dirname($file).DIRECTORY_SEPARATOR);
+        $this->coverage_tmp_file = '_coverage_data.tmp';
+        $this->execution_time_tmp_file = '_execution_time_data.tmp';
     }
     /* ----------------------------------------- */
 
     public function execute()
     {
-        global $start_time;
-        if (!$start_time) {
-            $start_time = microtime(true);
-        }
-
         // テストシナリオオブジェクトの作成
         include_once $this->system_conf['scenario']['path'];
         $scenario              = new $this->system_conf['scenario']['class_name'];
         $scenario->system_conf = $this->system_conf;
         $scenario->unit_test   = $this;
         $test_sweet_list = $scenario->execute();
+        $multi = $this->hasOption('--multi');
+        if (isset($this->system_conf['multi']) && $this->system_conf['multi'] == true) {
+            $multi = true;
+        }
+        if ($this->hasOption('-t')) {
+            $multi = false;
+        }
+
+        if (!$multi) {
+            return $this->_sympleExecute($scenario, $test_sweet_list);
+        }
+        return $this->_multiExecute($scenario, $test_sweet_list);
+
+    }
+    /* ----------------------------------------- */
+
+    /**
+     * +-- 別プロセスを起動して実行
+     *
+     * @access      private
+     * @param       var_text $scenario
+     * @param       var_text $test_sweet_list
+     * @return      void
+     */
+    private function _multiExecute($scenario, $test_sweet_list)
+    {
+        global $start_time, $argv;
+        if (!$start_time) {
+            $start_time = microtime(true);
+        }
+        @unlink($this->test_self_dir.$this->coverage_tmp_file);
+        @unlink($this->test_self_dir.$this->execution_time_tmp_file);
+        foreach ($argv as $k => $v) {
+            if ($k === 0) {
+                $cmd = $v;
+                continue;
+            }
+            if (strpos($v, ' ') !== false) {
+                $cmd .= ' "'.$v.'"';
+            } elseif (strpos($v, '--multi') !== false) {
+            } else {
+                $cmd .= ' '.$v;
+            }
+        }
+
+        $is_ng = false;
+        foreach ($test_sweet_list as $test) {
+            $self_cmd = $cmd;
+            $self_cmd .= ' -t '.$test['class_name'].' --this_is_multi_process_testing 2>&1';
+            system($self_cmd, $return_var);
+            if ($return_var !== 0) {
+                $is_ng = true;
+                break;
+            }
+        }
+
+        $execution_time = unserialize(file_get_contents($this->test_self_dir.$this->execution_time_tmp_file));
+
+        echo 'Total ExecutionTime:'.round(microtime(true) - $start_time, 5),"sec \r\n(testing only : ",
+            round($execution_time['testing_time_all'], 5),"sec) \r\n{$execution_time['assertion_count']} assertions test end \r\n",
+            number_format($execution_time['memory_get_peak_usage'])," memory usage\r\n";
+        if (isset($this->system_conf['code_coverage']) &&
+            $this->system_conf['code_coverage']['use'] &&
+            !$this->hasOption('--code_coverage-off') &&
+            !$execution_time['is_ng'] &&
+            !$is_ng
+            ) {
+            if (!class_exists('EnviCodeCoverage', false)) {
+                include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'EnviCodeCoverage.php';
+            }
+            $code_coverage = EnviCodeCoverage::factory();
+            $coverage_data = unserialize(file_get_contents($this->test_self_dir.$this->coverage_tmp_file));
+            $code_coverage->setCoverageData($coverage_data);
+
+            $this->showCodeCoverage($code_coverage);
+        }
+
+        @unlink($this->test_self_dir.$this->coverage_tmp_file);
+        @unlink($this->test_self_dir.$this->execution_time_tmp_file);
+    }
+    /* ----------------------------------------- */
+
+    /**
+     * +-- シンプルなテスト実行
+     *
+     * @access      private
+     * @param       var_text $scenario
+     * @param       var_text $test_sweet_list
+     * @return      void
+     */
+    private function _sympleExecute($scenario, $test_sweet_list)
+    {
+        global $start_time;
+        if (!$start_time) {
+            $start_time = microtime(true);
+        }
+
 
         // 変数初期化
         $is_ng = false;
@@ -123,6 +221,10 @@ class EnviUnitTest
                 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'EnviCodeCoverage.php';
             }
             $code_coverage = EnviCodeCoverage::factory();
+            if ($this->hasOption('--this_is_multi_process_testing') && is_file($this->test_self_dir.$this->coverage_tmp_file)) {
+                $coverage_data = unserialize(file_get_contents($this->test_self_dir.$this->coverage_tmp_file));
+                $code_coverage->setCoverageData($coverage_data);
+            }
             if (isset($this->system_conf['code_coverage']['black_list']) &&
                 is_array($this->system_conf['code_coverage']['black_list'])) {
                 foreach ($this->system_conf['code_coverage']['black_list'] as $black_list) {
@@ -324,7 +426,7 @@ class EnviUnitTest
                     $testing_execution_time_all += $execute_time;
                     $is_ng = true;
                     $trace = $e->getTrace();
-                    $this->sendErrorMessage($sweet['class_name'].'::'.$method." line on {$trace[0]['line']}".'  '.$e);
+                    $this->sendErrorMessage($sweet['class_name'].'::'.$method." {$trace[0]['file']} line on {$trace[0]['line']}".'  '.$e);
                 }
                 // テスト終了
                 $test_obj->free();
@@ -340,13 +442,46 @@ class EnviUnitTest
                 $sweet['class_name']::$method();
             }
         }
-        echo 'TotalExecutionTime:'.round(microtime(true) - $start_time, 5),"sec \r\n(testing only : ",
-            round($testing_time_all, 5),"sec) \r\n{$assertion_count} assertions test end \r\n",
-            number_format(memory_get_peak_usage(true))," memory usage\r\n";
+        $execution_name = $this->getOption('-t', 'Total');
+
+
+
+        if ($this->hasOption('--this_is_multi_process_testing')) {
+            if (is_file($this->test_self_dir.$this->execution_time_tmp_file)) {
+                $execution_time = unserialize(file_get_contents($this->test_self_dir.$this->execution_time_tmp_file));
+            } else {
+                $execution_time = array(
+                    'testing_time_all' => 0,
+                    'assertion_count' => 0,
+                    'memory_get_peak_usage' => 0,
+                    'is_ng'              => false
+                );
+            }
+
+            $execution_time = array(
+                'testing_time_all'      => $execution_time['testing_time_all'] + $testing_time_all,
+                'assertion_count'       => $execution_time['assertion_count'] + $assertion_count,
+                'memory_get_peak_usage' => max($execution_time['memory_get_peak_usage'], memory_get_peak_usage()),
+                'is_ng'      => $execution_time['is_ng'] ? true : $is_ng
+            );
+            file_put_contents($this->test_self_dir.$this->execution_time_tmp_file, serialize($execution_time));
+
+        } else {
+            echo $execution_name,' ExecutionTime:'.round(microtime(true) - $start_time, 5),"sec \r\n(testing only : ",
+                round($testing_time_all, 5),"sec) \r\n{$assertion_count} assertions test end \r\n",
+                number_format(memory_get_peak_usage(true))," memory usage\r\n";
+        }
+
         if ($code_coverage !== false && !$is_ng) {
-            $this->showCodeCoverage($code_coverage);
+            if ($this->hasOption('--this_is_multi_process_testing')) {
+                $coverage_data = $code_coverage->getCoverageData();
+                file_put_contents($this->test_self_dir.$this->coverage_tmp_file, serialize($coverage_data));
+            } else {
+                $this->showCodeCoverage($code_coverage);
+            }
         }
     }
+    /* ----------------------------------------- */
 
     /**
      * +-- コードCoverage情報を出力する

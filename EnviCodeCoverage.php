@@ -82,6 +82,16 @@ class EnviCodeCoverage
     }
     /* ----------------------------------------- */
 
+    public function getCoverageData()
+    {
+        return $this->coverage_data;
+    }
+
+    public function setCoverageData($setter)
+    {
+        $this->coverage_data = $setter;
+    }
+
     /**
      * +-- オブジェクトの精製
      *
