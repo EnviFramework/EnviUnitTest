@@ -765,7 +765,7 @@ class EnviUnitTest
             }
             $class_name = 'EnviUnitTest';
             if ($yml_path === false || !is_file($yml_path)) {
-                throw EnviTestException('YML file can not be found.');
+                throw new EnviTestException('YML file can not be found.');
             }
             self::$instance = new $class_name($yml_path);
         }
