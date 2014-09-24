@@ -260,11 +260,23 @@ class EnviMock
         $cf = tmpfile();
         $file_path = stream_get_meta_data($cf);
         $file_path = $file_path['uri'];
-        fwrite($cf, '<?php
-        class '.$class_name.' extends EnviMockBlankBase
-        {
-        }'
-        );
+        if (strpos($class_name, "\\")) {
+            $class_split = explode("\\", $class_name);
+            $class_name = array_pop($class_split);
+            $name_space = join("\\", $class_split);
+            fwrite($cf, '<?php
+            namespace '.$name_space.';
+            class '.$class_name.' extends EnviMockBlankBase
+            {
+            }'
+            );
+        } else {
+            fwrite($cf, '<?php
+            class '.$class_name.' extends EnviMockBlankBase
+            {
+            }'
+            );
+        }
         include $file_path;
     }
     /* ----------------------------------------- */
