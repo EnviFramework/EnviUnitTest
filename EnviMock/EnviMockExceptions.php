@@ -1,6 +1,8 @@
 <?php
 /**
- * モッククラスの例外一覧
+ * EnviMockの例外
+ *
+ * EnviMockで実行される例外です。
  *
  *
  * PHP versions 5
@@ -20,9 +22,13 @@
 
 
 /**
+ * EnviMock汎用例外
+ *
+ * EnviMockの例外基底クラスおよび、汎用例外です
+ *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
@@ -40,9 +46,14 @@ class EnviMockException extends exception
 
 
 /**
+ * モック実行時例外基底クラス
+ *
+ *
+ * モック実行時制限に引っかかった場合に、発光される例外基底クラス。
+ *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
@@ -78,9 +89,13 @@ class EnviMockExecuteException extends EnviMockException
 /* ----------------------------------------- */
 
 /**
+ * モック実行時、引数制限
+ *
+ * 引数制限例外
+ *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
@@ -103,9 +118,14 @@ class EnviMockArgumentException extends EnviMockExecuteException
 
 
 /**
+ * モック実行時、実効回数制限
+ *
+ * 実効回数制限例外(最大)
+ *
+ *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
@@ -130,9 +150,14 @@ class EnviMockMaxExecutionCountException extends EnviMockExecuteException
 
 
 /**
+ * モック実行時、実効回数制限
+ *
+ * 実効回数制限例外(最小)
+ *
+ *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License

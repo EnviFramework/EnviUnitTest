@@ -2,6 +2,9 @@
 /**
  * モック内部の実行クラス
  *
+ * 実際のモック内部処理クラス
+ *
+ *
  * PHP versions 5
  *
  *
@@ -20,12 +23,16 @@
 
 
 /**
- * モック内部の実行クラス
+ * 実際のモック内部処理クラス
+ *
+ * EnviMockでは、runkitで処理を上書きしますが、実際の処理は、EnviMockExecuterクラスが受け持ちます。
+ *
+ * 内部的に利用されているだけなので、通常このクラスを直接利用することはありません。
  *
  *
  * @category   自動テスト
- * @package    UnitTest
- * @subpackage UnitTest
+ * @package    テストスタブ
+ * @subpackage Mock
  * @author     Akito <akito-artisan@five-foxes.com>
  * @copyright  2011-2013 Artisan Project
  * @license    http://opensource.org/licenses/BSD-2-Clause The BSD 2-Clause License
