@@ -754,17 +754,18 @@ class EnviUnitTest
      *
      * @access public
      * @static
-     * @param boolean $yml_path OPTIONAL:false
+     * @param boolean $yml_path OPTIONAL:NULL
+     * @param boolean $spyc_path OPTIONAL:NULL
      * @return EnviUnitTest
      */
-    public static function singleton($yml_path = false, $spyc_path = NULL)
+    public static function singleton($yml_path = NULL, $spyc_path = NULL)
     {
         if (!is_object(self::$instance)) {
             if ($spyc_path) {
                 include_once $spyc_path;
             }
             $class_name = 'EnviUnitTest';
-            if ($yml_path === false || !is_file($yml_path)) {
+            if ($yml_path === NULL || !is_file($yml_path)) {
                 throw new EnviTestException('YML file can not be found.');
             }
             self::$instance = new $class_name($yml_path);
@@ -772,6 +773,7 @@ class EnviUnitTest
         return self::$instance;
     }
     /* ----------------------------------------- */
+
     /**
      * +-- 実行オプションの取得
      *
