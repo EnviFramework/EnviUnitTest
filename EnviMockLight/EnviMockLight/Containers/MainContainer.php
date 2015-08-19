@@ -1,6 +1,53 @@
 <?php
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * PHP versions 5
+ *
+ *
+ * @category   自動テスト
+ * @package    テストスタブ
+ * @subpackage EnviMockLight
+ * @author     Suzunone <suzunne.eleven@gmail.com>
+ * @copyright  2011-2015 Artisan Project
+ * @license    https://github.com/EnviMVC/EnviMockLight/blob/master/LICENSE
+ * @version    GIT: $Id$
+ * @link       http://www.enviphp.net/
+ * @see        http://www.enviphp.net/
+ * @since      Class available since Release v1.0.0
+ */
 namespace EnviMockLight\Containers;
 
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * @category   自動テスト
+ * @package    テストスタブ
+ * @subpackage EnviMockLight
+ * @author     Suzunone <suzunne.eleven@gmail.com>
+ * @copyright  2011-2015 Artisan Project
+ * @license    https://github.com/EnviMVC/EnviMockLight/blob/master/LICENSE
+ * @version    Release: @package_version@
+ * @link       http://www.enviphp.net/
+ * @author     Suzunone <suzunne.eleven@gmail.com>
+ * @since      Class available since Release v1.0.0
+ * @doc_ignore
+ */
 class MainContainer
 {
 

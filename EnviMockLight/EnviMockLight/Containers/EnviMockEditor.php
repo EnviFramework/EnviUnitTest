@@ -1,10 +1,10 @@
 <?php
 /**
+ * スタブされたインスタンスに対する操作を提供します。
  *
+ * EnviMockEditorはスタブされたインスタンスに対する操作を提供します。
  *
- *
- *
- *
+ * EnviMockEditorはすべてメソッドチェーンで実行されます。
  *
  *
  *
@@ -27,10 +27,9 @@
 namespace EnviMockLight\Containers;
 
 /**
+ * スタブされたインターフェイスに対する操作を提供します。
  *
- *
- *
- *
+ * EnviMockEditorはスタブされたインスタンスに対する操作を提供します。
  *
  *
  *
@@ -85,7 +84,7 @@ interface EnviMockEditor
      * {/@example}
      * @access      public
      * @param       string $method_name
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function shouldReceive($method_name);
 
@@ -96,9 +95,13 @@ interface EnviMockEditor
      *
      * 一度テストされた定義や、byDefault()された定義を再利用して、制限を加えます。
      *
+     * {@example}
+     *    EnviMockLight::getMockEditor($mock)->recycle($method_name);
+     * {/@example}
+     *
      * @access      public
      * @param       string $method_name
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function recycle($method_name);
 
@@ -116,8 +119,16 @@ interface EnviMockEditor
      * スタブ化前であれば、スタブする処理をスキップしますが、
      * スタブ化済のメソッドを、restore()することはしないので、定義順序に注意してください。
      *
+     * {@example}
+     *    $mock
+     *    ->shouldReceive('check') // checkというメソッドが呼び出される
+     *    ->with('foo') // 引数として'foo'を受け取る
+     *    ->byDefault() // 制限をテンプレートとして登録するように指示する
+     *    ->andReturn(true); // trueを返却する
+     * {/@example}
+     *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function byDefault();
 
@@ -126,14 +137,14 @@ interface EnviMockEditor
     /**
      * +-- このメソッドにのみ期待される引数のリストの制約を追加します。
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * 指定のメソッドに渡される引数のリストを追加します。
      * 指定された引数以外が渡された場合は、例外、EnviMockExceptionがthrowされます。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function with();
 
@@ -150,15 +161,15 @@ interface EnviMockEditor
     /**
      * +-- このメソッドにのみ期待される引数のリストの制約を追加します。
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * 指定のメソッドに渡される引数のリストを追加します。
      * 指定された引数以外が渡された場合は、例外、EnviMockExceptionがthrowされます。
      *
      * @access      public
      * @param       integer $times 制限回数
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
 
     public function withByTimes($times);
@@ -168,7 +179,7 @@ interface EnviMockEditor
     /**
      * +-- メソッドが1回だけ呼び出されることを定義します
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * メソッドが1回だけ呼び出されることを定義します
      * 制約から外れた場合は、例外、EnviMockExceptionがthrowされます。
@@ -176,8 +187,8 @@ interface EnviMockEditor
      * このメソッドはv3.3.6から、下限の制限がつきました。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function once();
 
@@ -186,7 +197,7 @@ interface EnviMockEditor
     /**
      * +-- メソッドが2回だけ呼び出されることを定義します
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * メソッドが2回だけ呼び出されることを定義します。
      * 制約から外れた場合は、例外、EnviMockExceptionがthrowされます。
@@ -194,9 +205,9 @@ interface EnviMockEditor
      * このメソッドはv3.3.6から、下限の制限がつきました。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
-     * @see         EnviTestMockEditor::time()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
+     * @see         EnviMockLight\Containers\EnviMockEditor::time()
      */
     public function twice();
 
@@ -208,7 +219,7 @@ interface EnviMockEditor
      * @access      public
      * @param       integer $min 制限回数下限
      * @param       integer $max 制限回数上限
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function between($min, $max);
 
@@ -219,8 +230,8 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       integer $n 制限回数下限
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function atLeast($n);
 
@@ -233,11 +244,11 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       integer $n 制限回数上限
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
-     * @see         EnviTestMockEditor::once()
-     * @see         EnviTestMockEditor::twice()
-     * @see         EnviTestMockEditor::time()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
+     * @see         EnviMockLight\Containers\EnviMockEditor::once()
+     * @see         EnviMockLight\Containers\EnviMockEditor::twice()
+     * @see         EnviMockLight\Containers\EnviMockEditor::time()
      */
     public function atMost($n);
 
@@ -246,14 +257,14 @@ interface EnviMockEditor
     /**
      * +-- メソッドが呼び出されないことを定義します
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * メソッドが呼び出されないことを定義します。
      * 制約から外れた場合は、例外、EnviMockExceptionがthrowされます。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function never();
 
@@ -262,7 +273,7 @@ interface EnviMockEditor
     /**
      * +-- メソッドが$n回だけ呼び出されることを定義します
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * メソッドが$n回だけ呼び出されることを定義します。
      * 制約から外れた場合は、例外、EnviMockExceptionがthrowされます。
@@ -271,8 +282,8 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       integer $n 制限回数
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function times($n);
 
@@ -282,14 +293,14 @@ interface EnviMockEditor
      * +-- 期待メソッドが0回以上呼び出すことができることを宣言します。これは、すべてのメソッドのデフォルトです。
      *
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出されます。
      *
      * 期待メソッドが0回以上呼び出すことができることを宣言します。
      * 設定変更しない限り、これは、すべてのメソッドのデフォルトです。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function zeroOrMoreTimes();
 
@@ -302,7 +313,7 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       boolean $is_pool OPTIONAL:true
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function executionCountPooling($is_pool = true);
 
@@ -345,14 +356,14 @@ interface EnviMockEditor
      *
      * この後のモックメソッドの全ての呼び出しは、常にこの宣言に指定された値を返すことに注意してください。
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
      *
      *
      *
      * @access      public
      * @param       any $res
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function andReturn($res);
 
@@ -365,11 +376,11 @@ interface EnviMockEditor
      *
      * この後のモックメソッドの全ての呼び出しは、常にこの宣言に指定されたNULLを返すことに注意してください。
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
      *
      * @access      public
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function andReturnNull();
 
@@ -380,8 +391,8 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       integer $val 返す引数の場所 OPTIONAL:0
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function andReturnAugment($val = 0);
 
@@ -392,8 +403,8 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       integer $val 返す引数の場所 OPTIONAL:0
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function andReturnAugmentAll();
 
@@ -404,7 +415,7 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       callback $val
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function andReturnCallBack($val);
 
@@ -415,7 +426,7 @@ interface EnviMockEditor
      *
      * @access      public
      * @param       array $val
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function andReturnConsecutive(array $val);
 
@@ -427,7 +438,7 @@ interface EnviMockEditor
      * @access      public
      * @param       array $map
      * @param       array $val
-     * @return      EnviTestMockEditorRunkit
+     * @return      EnviMockLight\Containers\EnviMockEditor
      */
     public function andReturnMap(array $map, array $val);
 
@@ -438,13 +449,13 @@ interface EnviMockEditor
      *
      * この後のモックメソッドの全ての呼び出し、常にこの宣言に例外を返すようになることに注意して下さい。
      *
-     * EnviTestMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
+     * EnviMockLight\Containers\EnviMockEditor::shouldReceive()から、メソッドチェーンで呼び出され、制限が確定されます。
      *
      * @access      public
      * @param       string|exception $exception_class throwされるexceptionオブジェクトかexceptionクラス名
      * @param       any $message OPTIONAL:''
-     * @return      EnviTestMockEditorRunkit
-     * @see         EnviTestMockEditor::shouldReceive()
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::shouldReceive()
      */
     public function andThrow($exception_class, $message = '');
 
