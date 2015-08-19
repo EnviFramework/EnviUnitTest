@@ -41,6 +41,20 @@
 require_once dirname(__FILE__).'/EnviUnitTest/EnviUnitTestBase.php';
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'EnviMock.php';
 
+if (is_file(getcwd().DIRECTORY_SEPARATOR.'ENVI_SIMPLE_MOCK_IS_DISABLED')) {
+    define('ENVI_SIMPLE_MOCK_IS_ENABLED', false);
+}
+
+if (!defined('ENVI_SIMPLE_MOCK_IS_ENABLED')) {
+    $ENVI_SIMPLE_MOCK_IS_ENABLED = (PHP_MAJOR_VERSION === 5 && PHP_MINOR_VERSION >= 4) || PHP_MAJOR_VERSION > 5;
+    define('ENVI_SIMPLE_MOCK_IS_ENABLED', $ENVI_SIMPLE_MOCK_IS_ENABLED);
+}
+if (ENVI_SIMPLE_MOCK_IS_ENABLED) {
+    require_once dirname(__FILE__).'/EnviMockLight/EnviMockLight/EnviMockLight.php';
+}
+
+
+
 /**
  * 自動テストフレームワーク
  *
@@ -319,6 +333,27 @@ class EnviUnitTest
                     }
                     $this->sendErrorMessage($sweet['class_name'].'::'.$method." line on {$test_trace_before['line']}".'  '.$e->getMessage());
                     EnviMock::free();
+                } catch (EnviMockLight_Exception $e) {
+                    // モックのエラー
+                    $execute_time = (microtime(true) - $method_start_time);
+                    $testing_execution_time_all += $execute_time;
+                    $is_ng = true;
+                    $trace = $e->getTrace();
+                    $test_trace_before = array();
+                    foreach ($trace as $test_trace) {
+                        if (isset($test_trace['class'], $test_trace['function'])){
+                            if (strtolower($test_trace['class']) === strtolower($sweet['class_name']) && strtolower($test_trace['function']) === strtolower($method)) {
+                                break;
+                            }
+                        }
+                        $test_trace_before = $test_trace;
+                    }
+                    $this->sendErrorMessage($sweet['class_name'].'::'.$method." line on {$test_trace_before['line']}".'  '.$e->getMessage());
+
+
+                    if (ENVI_SIMPLE_MOCK_IS_ENABLED) {
+                        EnviSimpleMock::free();
+                    }
                 } catch (exception $e) {
                     $execute_time = (microtime(true) - $method_start_time);
                     $testing_execution_time_all += $execute_time;

@@ -93,6 +93,9 @@ abstract class EnviTestBase
     protected function assertionExecuteAfter()
     {
         EnviMock::assertionExecuteAfter();
+        if (ENVI_SIMPLE_MOCK_IS_ENABLED) {
+            EnviSimpleMock::assertionExecuteAfter();
+        }
         $this->stop_watch[self::DIFF_TIME] += microtime(true) - $this->stop_watch[self::START_TIME];
     }
 
