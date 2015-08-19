@@ -699,7 +699,7 @@ class EnviMockEditorRunkit implements EnviMockEditor
      */
     public function executionCountPooling($is_pool = true)
     {
-        $this->setContainer('execution_count_pooling', false);
+        $this->setContainer('execution_count_pooling', $is_pool);
         return $this;
     }
     /* ----------------------------------------- */
@@ -849,7 +849,7 @@ class EnviMockEditorRunkit implements EnviMockEditor
     public function andReturnConsecutive(array $val)
     {
         $this->mockCommit();
-        $this->setContainer('return_is_consecutive ', true);
+        $this->setContainer('return_is_consecutive', true);
         $this->setContainer('return_values', array_values($val));
         return $this;
     }
@@ -866,7 +866,7 @@ class EnviMockEditorRunkit implements EnviMockEditor
     public function andReturnMap(array $map, array $val)
     {
         $this->mockCommit();
-        $this->setContainer('return_is_map ', true);
+        $this->setContainer('return_is_map', true);
         $return_values = array();
         foreach ($map as $arguments) {
             $return_value = each($val);

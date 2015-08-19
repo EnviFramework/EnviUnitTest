@@ -82,7 +82,7 @@ class EnviMockExecuter
             return isset($augments[$this->getContainer('return_values')]) ? $augments[$this->getContainer('return_values')] : NULL;
         } elseif ($this->getContainer('return_is_augment_all', false)) {
             // 引数
-            return $augments;
+            return $arguments;
         } elseif ($this->getContainer('return_is_callback', false)) {
             // 関数の実行
             return call_user_func_array($this->getContainer('return_values'), $arguments);
@@ -90,14 +90,17 @@ class EnviMockExecuter
             // consecutive
             $map = $this->getContainer('return_values');
             $maxkey = count($map) - 1;
-            $key = $execute_count%$maxkey;
+            $key = $execute_count - 1;
+            while (!isset($map[$key])) {
+                $key -= count($map);
+            }
             return $map[$key];
         } elseif ($this->getContainer('return_is_map', false)) {
             // map
             $map = $this->getContainer('return_values');
             foreach ($map as $val) {
                 if ($arguments === $val['arguments']) {
-                    return $val['return_value'];
+                    return $val['return_values'];
                 }
             }
             return NULL;
