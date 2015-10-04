@@ -20,7 +20,7 @@
  *
  * 現在のバージョンでは、[runkit](http://pecl.php.net/package-changelog.php?package=runkit)拡張モジュールが必要です。
  *
- * PHP5.4以降では、runkitを使用しない、EnviSimpleMockを使用することができますが、EnviMockの完全な互換でないので注意してください。
+ * PHP5.4以降では、runkitを使用しない、EnviMockLightを使用することができますが、EnviMockの完全な互換でないので注意してください。
  *
  *
  * モッククラス
