@@ -239,7 +239,7 @@ class EnviUnitTest
 
                     // コードカバレッジ
                     if (isset($docs_method['covers'])) {
-                        foreach ($docs_method['cover'] as $val) {
+                        foreach ($docs_method['covers'] as $val) {
                             $cover[] = $val[0];
                         }
                     }
