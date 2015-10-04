@@ -94,7 +94,7 @@ abstract class EnviTestBase
     {
         EnviMock::assertionExecuteAfter();
         if (ENVI_SIMPLE_MOCK_IS_ENABLED) {
-            EnviSimpleMock::assertionExecuteAfter();
+            EnviMockLight::assertionExecuteAfter();
         }
         $this->stop_watch[self::DIFF_TIME] += microtime(true) - $this->stop_watch[self::START_TIME];
     }

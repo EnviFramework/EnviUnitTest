@@ -352,7 +352,7 @@ class EnviUnitTest
 
 
                     if (ENVI_SIMPLE_MOCK_IS_ENABLED) {
-                        EnviSimpleMock::free();
+                        EnviMockLight::free();
                     }
                 } catch (exception $e) {
                     $execute_time = (microtime(true) - $method_start_time);
