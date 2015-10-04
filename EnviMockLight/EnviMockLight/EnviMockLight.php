@@ -180,6 +180,14 @@ class EnviMockLight
     /**
      * +-- モックメソッドの実行トレースを取得する
      *
+     * モックメソッドや、モッククラスの実行トレースを取得します。
+     *
+     * 取得される値は、実行順となります。
+     *
+     * アサーション毎にリセットされますので、アサーションを行う前に取得してください。
+     *
+     * この機能は、主にメソッドやクラスの実行順序を監査するために使用されます。
+     *
      * @access      public
      * @static
      * @return      array
@@ -194,9 +202,12 @@ class EnviMockLight
     /**
      * +-- モックメソッドの実行トレースリストを削除する
      *
+     * モックメソッドや、モッククラスの実行トレースを削除します。
+     *
      * @access      public
      * @static
      * @return      void
+     * @doc_ignore
      */
     public static function resetMockTraceList()
     {
@@ -206,11 +217,12 @@ class EnviMockLight
     /* ----------------------------------------- */
 
     /**
-     * +-- エグゼキューターのリストを削除する
+     * +-- プロセスのリストを削除する
      *
      * @access      public
      * @static
      * @return      void
+     * @doc_ignore
      */
     public static function resetProcess()
     {
@@ -225,6 +237,7 @@ class EnviMockLight
      * @access      public
      * @static
      * @return      void
+     * @doc_ignore
      */
     public static function resetExecuter()
     {
@@ -242,6 +255,7 @@ class EnviMockLight
      * @static
      * @param       boolean $is_reset_trace OPTIONAL:true
      * @return      void
+     * @doc_ignore
      */
     public static function assertionExecuteAfter($is_reset_trace = true)
     {
@@ -264,10 +278,12 @@ class EnviMockLight
     /**
      * +-- オブジェクトからコンテナを取得する
      *
+     * EnviMockLight::mock()で作られたモックオブジェクトから、Containerオブジェクトを取得します。
+     *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @return      void
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @return      EnviMockLight\Containers\Container
      */
     public static function getMockContainer($MockReceiver)
     {
@@ -279,10 +295,15 @@ class EnviMockLight
     /**
      * +-- オブジェクトからEnviMockEditorを取得する
      *
+     * EnviMockLight::mock()で作られたモックオブジェクトから、EnviMockEditorオブジェクトを取得します。
+     *
+     * 現在のところ、EnviMockLight::getMockContainerの完全なエイリアスです。
+     *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @return      void
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight::getMockContainer
      * @codeCoverageIgnore
      */
     public static function getMockEditor($MockReceiver)
@@ -298,8 +319,9 @@ class EnviMockLight
      *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @return      void
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @return      EnviMockLight\Executers\Executer
+     * @doc_ignore
      */
     public static function getMockExecuter($MockReceiver)
     {
@@ -312,11 +334,16 @@ class EnviMockLight
     /**
      * +-- スタブ化する
      *
+     * EnviMockLight::mock()で作られたモックオブジェクトを、スタブ化します。
+     *
+     * `EnviMockLight::getMockContainer($MockReceiver)->useStab($method_name);`と等価です。
+     *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @param       string $method_name
-     * @return      EnviMockLight\Containers\Container
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @param       string $method_name useStabするメソッド
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::useStab
      */
     public static function useStab($MockReceiver, $method_name)
     {
@@ -330,11 +357,18 @@ class EnviMockLight
     /**
      * +-- レストアする
      *
+     * EnviMockLight::mock()で作られたモックオブジェクトの、$method_nameで指定されたメソッドのスタブや、制限をすべて解除します。
+     *
+     *
+     * `EnviMockLight::getMockContainer($MockReceiver)->restore($method_name);`と等価です。
+     *
+     *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @param       string $method_name
-     * @return      EnviMockLight\Containers\Container
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @param       string $method_name restoreするメソッド
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::restore
      */
     public static function restore($MockReceiver, $method_name)
     {
@@ -348,11 +382,18 @@ class EnviMockLight
     /**
      * +-- Recycleする
      *
+     * EnviMockLight::mock()で作られたモックオブジェクトの、$method_nameで指定されたメソッドの制限を再利用します。
+     *
+     * 実行回数などは全てリセットされます。
+     *
+     * `EnviMockLight::getMockContainer($MockReceiver)->recycle($method_name);`と等価です。
+     *
      * @access      public
      * @static
-     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver
-     * @param       string $method_name
-     * @return      EnviMockLight\Containers\Container
+     * @param       EnviMockLight\Builders\MockReceiver $MockReceiver EnviMockLight::mock()で作られたモックオブジェクト
+     * @param       string $method_name recycleするメソッド
+     * @return      EnviMockLight\Containers\EnviMockEditor
+     * @see         EnviMockLight\Containers\EnviMockEditor::recycle
      */
     public static function recycle($MockReceiver, $method_name)
     {
@@ -362,7 +403,7 @@ class EnviMockLight
     /* ----------------------------------------- */
 
     /**
-     * +--
+     * +-- すべて初期化する
      *
      * @access      public
      * @static
@@ -407,4 +448,28 @@ class EnviMockLight
 
 }
 
-
+/**
+ * 汎用例外
+ *
+ * EnviMockLightの例外基底クラスおよび、汎用例外です
+ *
+ *
+ *
+ *
+ *
+ *
+ * @category   自動テスト
+ * @package    テストスタブ
+ * @subpackage EnviMockLight
+ * @author     Suzunone <suzunne.eleven@gmail.com>
+ * @copyright  2011-2015 Artisan Project
+ * @license    https://github.com/EnviMVC/EnviMockLight/blob/master/LICENSE
+ * @version    Release: @package_version@
+ * @link       http://www.enviphp.net/
+ * @author     Suzunone <suzunne.eleven@gmail.com>
+ * @since      Class available since Release v1.0.0
+ * @codeCoverageIgnore
+ */
+class EnviMockLight_Exception extends \exception
+{
+}
