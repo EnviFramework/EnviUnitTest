@@ -131,6 +131,10 @@ class Executer
             return call_user_func_array($this->getContainer('return_values'), $arguments);
         } elseif ($this->getContainer('return_is_consecutive', false)) {
             // consecutive
+            if (!isset($execute_count)) {
+                $execute_count = $this->incrementExecuteCount();
+            }
+
             $map = $this->getContainer('return_values');
             $maxkey = count($map) - 1;
             $key = $execute_count - 1;
